@@ -1,0 +1,12 @@
+{
+    "name":"reportinator",
+    "web":{
+        "rewrites":{
+            "enable":"true"
+        },
+        "HTTP":{
+            "enable":true,
+            "port":36003
+        }
+    }
+}

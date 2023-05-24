@@ -1,0 +1,12 @@
+{
+    "name":"savinator",
+    "web":{
+        "rewrites":{
+            "enable":"true"
+        },
+        "HTTP":{
+            "enable":true,
+            "port":36002
+        }
+    }
+}

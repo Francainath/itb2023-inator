@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Inator</title>
+</head>
+<body>
+	<h1 class="inatorheader">Inator</h1>
+	<div class="inator-input">
+		<input type="text" id="dataPoint" name="dataPoint">
+	</div>
+	<div class="inator-button">
+		<button id="sendDataButton" onclick="sendData()">Send Data</button>
+	</div>
+	<div class="send-data-response"></div>
+	<br><br>
+	<hr>
+	<div class="app-updown">
+		<p id="accessinator-status">Accessinator: <b>Not Up</b></p>
+		<p id="savinator-status">Savinator: <b>Not Up</b></p>
+		<p id="reportinator-status">Reportinator: <b>Not Up</b></p>
+	</div>
+	<br><br>
+	<hr>
+	<div class="reports">
+		<div>
+			<button id="fullDataButton" onclick="getFullData()">Get Full Data</button>
+			<div class="get-full-data-response"></div>
+		</div>
+		<br><br>
+		<div>
+			<button id="distinctDataButton" onclick="getDistinctData()">Get Distinct Data</button>
+			<div class="get-distinct-data-response"></div>
+		</div>
+		<br><br>
+		<div>
+			<input type="text" class="inator-input" id="hasDataPointInput" name="dataPoint">
+			<button id="hasDataPointButton" onclick="hasDataPoint()">Has Data Point</button>
+			<div class="has-data-point-response"></div>
+		</div>
+	</div>
+</body>
+
+<script type="text/javascript">
+const myHeaders = new Headers();
+myHeaders.append('Content-Type', 'application/json');
+
+function sendData() {
+	const data = document.getElementById('dataPoint').value;
+	const request = new Request('http://localhost:36001/process', {
+		method: 'POST',
+		body: JSON.stringify({data}),
+		headers: myHeaders
+	});
+
+	fetch(request)
+		.then(response => response.json())
+		.then(data => {
+			console.log('data', data);
+			let sendDataResponse = document.querySelector('div.send-data-response');
+			sendDataResponse.innerHTML = JSON.stringify(data);
+			setTimeout(() => {
+				sendDataResponse.innerHTML = '';
+			}, '3000');
+		})
+	;
+}
+
+
+function getFullData() {
+	const request = new Request('http://localhost:36003/fullData', {
+		method: 'GET',
+		headers: myHeaders
+	});
+
+	fetch(request)
+		.then(response => response.json())
+		.then(data => {
+			let getFullData = document.querySelector('div.get-full-data-response');
+			getFullData.innerHTML = JSON.stringify(data);
+			setTimeout(() => {
+				getFullData.innerHTML = '';
+			}, '5000');
+		})
+	;
+}
+
+function getDistinctData() {
+	const request = new Request('http://localhost:36003/distinctData', {
+		method: 'GET',
+		headers: myHeaders
+	});
+
+	fetch(request)
+		.then(response => response.json())
+		.then(data => {
+			let getDistinctData = document.querySelector('div.get-distinct-data-response');
+			getDistinctData.innerHTML = JSON.stringify(data);
+			setTimeout(() => {
+				getDistinctData.innerHTML = '';
+			}, '5000');
+		})
+	;
+}
+
+function hasDataPoint() {
+	const dataPoint = document.getElementById('hasDataPointInput').value;
+	const request = new Request(`http://localhost:36003/hasDataPoint?dataPoint=${dataPoint}`, {
+		method: 'GET',
+		headers: myHeaders
+	});
+
+	fetch(request)
+		.then(response => response.json())
+		.then(data => {
+			let getDistinctData = document.querySelector('div.has-data-point-response');
+			getDistinctData.innerHTML = JSON.stringify(data);
+			setTimeout(() => {
+				getDistinctData.innerHTML = '';
+			}, '5000');
+		})
+	;
+}
+
+//accessinator
+setInterval(() => {
+	const request = new Request('http://localhost:36001/greeting', {
+		method: 'GET',
+		headers: myHeaders
+	});
+
+	fetch(request)
+		.then(response => response.json())
+		.then(data => {
+			let accessinatorStatus = document.querySelector('#accessinator-status');
+			accessinatorStatus.innerHTML = `Accessinator: <b>${data.language}</b>`;
+		})
+		.catch(() => {
+			let accessinatorStatus = document.querySelector('#accessinator-status');
+			accessinatorStatus.innerHTML = 'Accessinator: <b>Not Up</b>';
+		})
+	;
+}, 2000);
+
+//savinator
+setInterval(() => {
+	const request = new Request('http://localhost:36002/greeting', {
+		method: 'GET',
+		headers: myHeaders
+	});
+
+	fetch(request)
+		.then(response => response.json())
+		.then(data => {
+			let savinatorStatus = document.querySelector('#savinator-status');
+			savinatorStatus.innerHTML = `Savinator: <b>${data.language}</b>`;
+		})
+		.catch(() => {
+			let savinatorStatus = document.querySelector('#savinator-status');
+			savinatorStatus.innerHTML = 'Savinator: <b>Not Up</b>';
+		})
+	;
+}, 2000);
+
+//reportinator
+setInterval(() => {
+	const request = new Request('http://localhost:36003/greeting', {
+		method: 'GET',
+		headers: myHeaders
+	});
+
+	fetch(request)
+		.then(response => response.json())
+		.then(data => {
+			let reportinatorStatus = document.querySelector('#reportinator-status');
+			reportinatorStatus.innerHTML = `Reportinator: <b>${data.language}</b>`;
+		})
+		.catch(() => {
+			let reportinatorStatus = document.querySelector('#reportinator-status');
+			reportinatorStatus.innerHTML = 'Reportinator: <b>Not Up</b>';
+		})
+	;
+}, 2000);
+</script>
+</html>
+
+<style>
+body {
+    background: #EEC61F;
+}
+.inatorheader, .inator-button, .send-data-response, .has-data-point-response, .get-distinct-data-response, .get-full-data-response {
+    text-align: center;
+    margin: 0 auto;
+    font-weight: bolder;
+}
+
+.app-updown, .reports {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.inator-input {
+    height: 100%;
+/*    width: 100%;*/
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    resize: both;
+    overflow: auto;
+}
+</style>
